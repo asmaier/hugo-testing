@@ -1,0 +1,28 @@
+{{ $r := . }}
+{{ with .Exif }}
+  {{ with .Tags.Orientation }}
+    {{ $filters := slice }}
+    {{ $rotation := 0 }}
+    {{ if eq . 2 }}
+      {{/* $filters = images.FlipHorizontal */}}
+    {{ else if eq . 3 }}
+      {{ $filters = images.Process "r180" }}
+    {{ else if eq . 4 }}
+      {{/* $filters = images.FlipVertical */}}
+    {{ else if eq . 5 }}
+      {{/*  {{ $filters = slice (images.Process "r90") images.FlipVertical }}  */}}
+      {{ $filters = slice (images.Process "r90") }}
+    {{ else if eq . 6 }}
+      {{ $filters = images.Process "r270" }}
+    {{ else if eq . 7 }}
+      {{/*  {{ $filters = slice (images.Process "r90") images.FlipHorizontal }}  */}}
+      {{ $filters = slice (images.Process "r90") }}
+    {{ else if eq . 8 }}
+      {{ $filters = images.Process "r90" }}
+    {{ end }}
+    {{ with $filters }}
+      {{ $r = images.Filter . $r }}
+    {{ end }}
+  {{ end }}
+{{ end }}
+{{ return $r }}

@@ -8,8 +8,32 @@
   {{ with or .Params.url .Params.details }}
     <hr>
   {{ end }}
+
   {{ .Content }}
-  {{ range site.RegularPages }}
-    <h2><a href="{{ .RelPermalink }}">{{ .LinkTitle }}</a></h2>
+
+  {{ with resources.ByType "image" }}
+    <table>
+      <thead><tr><th>Original</th><th>Corrected</th></tr></thead>
+      <tbody>
+        {{ range . }}
+        <tr><td>{{ .Name }}</td><td></td></tr>
+        <tr>
+          <td>
+            {{ with .Resize "400x" }}
+              <img src="{{ .RelPermalink }}">
+            {{ end }}
+          </td>
+          <td>
+            {{ with images.AutoOrient . }}
+              {{ with .Resize "400x" }}
+                <img src="{{ .RelPermalink }}" width="{{ .Width }}" height="{{ .Height }}" alt="">
+              {{ end }}
+            {{ end }}
+          </td>
+        </tr>
+        {{ end }}
+      </tbody>
+    </table>
   {{ end }}
+
 {{ end }}
