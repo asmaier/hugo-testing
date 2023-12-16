@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="{{ site.Language.LanguageCode }}" dir="{{ or site.Language.LanguageDirection `ltr` }}">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1.0">
+  <title>{{ if .IsHome }}{{ site.Title }}{{ else }}{{ printf "%s | %s" site.Title .Title }}{{ end }}</title>
+</head>
+<body>
+  <header>
+    <h1>{{ site.Title }}</h1>
+    <hr>
+  </header>
+  <main>
+
+    <table>
+      <thead>
+        <tr>
+          <th>Original</th>
+          <th>Process q70</th>
+          <th>AutoOrient then Process q70</th>
+        </tr>
+      </thead>
+      <tbody>
+        {{ range resources.ByType "image" }}
+          <tr><td colspan="3">{{ .Name }}</td></tr>
+          <tr>
+            <td>
+              <img src="{{ .RelPermalink }}" width="{{ .Width }}" height="{{ .Height }}" alt="">
+            </td>
+            <td>
+              {{ $filters := slice (images.Process "q70") }}
+              {{ with images.Filter $filters . }}
+                <img src="{{ .RelPermalink }}" width="{{ .Width }}" height="{{ .Height }}" alt="">
+              {{ end }}
+            </td>
+            <td>
+              {{ $filters := slice images.AutoOrient (images.Process "q70") }}
+              {{ with images.Filter $filters . }}
+                <img src="{{ .RelPermalink }}" width="{{ .Width }}" height="{{ .Height }}" alt="">
+              {{ end }}
+            </td>
+          </tr>
+        {{ end }}
+      </tbody>
+    </table>
+
+  </main>
+</body>
+</html>
